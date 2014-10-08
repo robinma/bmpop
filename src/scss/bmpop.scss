@@ -6,10 +6,25 @@
 @import "./core/_mixin";
 @import "./core/_media_queries";
 //define
+html {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adject: 100%;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: scroll; }
 
+/**
+ *   remove default marign
+ */
+body {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #999999;
+  background-color: white; }
 //自定义弹出框样式
 .bm_lawyer{position: absolute;top: 0;left: 0;z-index: 4999;width: 100%;height: 0;overflow: visible;font-family: "Microsoft Yahei";}
-.bm_popwarp{ width: 80%; font-size:32px; font-family: "黑体-繁","文泉驿微米黑"; position: relative; margin: 0 auto; }
+.bm_popwarp{ width: 80%; font-size:12px; font-family: "黑体-繁","文泉驿微米黑"; position: relative; margin: 0 auto;position: absolute; }
 
 @include min-screen(480px){
     .bm_popwarp{ font-size: 24px; }
@@ -42,7 +57,7 @@
   .tt{color:#fff;}
  }
 
-//==========================
+//=====================
  /*public popbox style*/
 .m_icon{width:20px; height:20px;display: block;overflow: hidden;line-height: 500px;float: left;}
 

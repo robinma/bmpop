@@ -46,9 +46,8 @@ module.exports = function(grunt) {
         sass:{
             dist:{
                 values:'compressed',
-                files:{
-                    "src/css/bmpop.css":"src/scss/bmpop.scss"
-                }
+                files:[{"src/css/bmpop.css":"src/scss/bmpop.scss"},
+                {"src/css/base.css":"src/scss/base.scss"}]
             }
         },
         watch:{

@@ -1,0 +1,16 @@
+@charset "UTF-8";
+//------------------
+//base scss
+
+@import "./core/_setting";
+@import "./core/_css3";
+@import "./core/_mixin";
+@import "./core/_reset";
+
+
+.clearfix{
+  @extend %clearfix;
+}
+
+.fl{@include float(left);}
+.fr{@include float(right);}

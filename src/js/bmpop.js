@@ -11,7 +11,7 @@
     });
   } else {
     //as a browser global
-    root.hm = factory(root);
+    root.bm = factory(root);
   }
 
 })(this, function(root) {
@@ -34,7 +34,7 @@
 			requestType : null, //iframe,ajax,img
 			title : '标题', //标题
 			drag : true, //是否拖动，当此值为true时，如果noTitle为false，也不可以拖动
-			width : 400, //内容区的宽度
+			width : 300, //内容区的宽度
 			height : 'auto', //内容的高度
 			html : '',//popBox的内容
 			style:"",//目前针对iframe设置
@@ -60,30 +60,20 @@
 		return def;
 	},
 	getPopTpl=function(ntitle,title,arrow,nclose,nsty){
-		var popTpl='<div class="NY-pop-warp '+(nsty?'':'NY-pop-style')+'">'+(arrow?'<div class="NY-arrow"><span class="npa-a npa-w">◆</span><span class="npa-a npa-u">◆</span><span class="npa-a npa-b">◆</span></div>':'')+'<div class="NY-pop-bg"><div class="NY-pop-ct">'+(ntitle?'':'<div class="NY-pop-title">'+(nclose?'':'<a href="javascript:;" class="nyt-close">')+'</a><h4 class="nyt-txt">'+title+'</h4></div>')+'<div class="NY-con-warp" note-type="pop-cont-warp"></div></div></div></div>';
+		var popTpl='<div class="bm_popwarp"><div class="bm_pop">'+(ntitle?'':'<div class="bm_pop_title">'+(nclose?'':'<a href="javascript:;" class="close" nt-type="bm_close"><span class="i"><em class="it">×</em></span></a>')+'<span class="t">'+title+'</span></div>')+'<div class="bm_contenter" note-type="pop-cont-warp"></div></div></div>';
 		return popTpl;
 	},
 	getConfirmTpl=function(txt,ok,cc){
-		var ctpl='<div class="NY-con-cofirm"><div class="NY-con-cnfirm-txt"><div class="NY-con_icon NY-warn"></div><div class="NY-ccf"><p>'+txt+'</p></div></div><div class="NY-com-btnarea"><a href="#" class="NY_rt_btn NY_rt_active" node-type="ok"><b class="NY_iw"><b class="NY_ii"><u class="NY_it">'+ok+'</u></b></b></a><a href="#" class="NY_rt_btn" node-type="cancel"><b class="NY_iw"><b class="NY_ii"><u class="NY_it">'+cc+'</u></b></b></a></div></div>';
+		var ctpl = '<div class="txt"><p>'+txt+'</p></div><div class="bm_pbtn_ar"><a href="javascript:;" class="bm_p_button bm_p_button_waiter" node-type="ok"><span class="tt">'+ok+'</span></a><a href="javascript:;" class="bm_p_button bm_p_button_green" node-type="cancel"><span class="tt">'+cc+'</span></a></div>';
 		return ctpl;
 	},
 	getalertTpl=function(txt,ok){
-		var ctpl='<div class="NY-con-cofirm"><div class="NY-con-alert-txt"><p>'+txt+'</p></div><div class="NY-com-btnarea"><a href="#" class="NY_rt_btn NY_rt_active" node-type="ok"><b class="NY_iw"><b class="NY_ii"><u class="NY_it">'+ok+'</u></b></b></a></div></div>';
+		var ctpl='<div class="txt"><p>'+txt+'</p></div><div class="bm_pbtn_ar"><a href="javascript:;" class="bm_p_button bm_p_button_green" node-type="ok"><span class="tt">'+ok+'</span></a></div>';
 		return ctpl;
 	},
 	getToastTpl=function(txt){
 		var tpl='<div class="NY-con-warp" note-type="pop-cont-warp"><div class="NY-con-toast">	<p>'+txt+'</p></div></div>';
 			return tpl;
-	},
-	getealertTpl=function(text,ok,type){
-		var tc;
-		if(type=='ok'){
-			tc='NY_icon_ok';
-		}else if(type=='notice'){
-			tc='NY_icon_atatiion';
-		}
-		var h = '<div class="NY_report_warp clearfix"><div class="NY_report"><div class="NY_tipwarp"><span class="NY_tiptxt"><span class="NY_icon '+tc+'"></span>'+text+'</span></div><div class="NY-com-btnarea"><a href="javascript:;" class="NY_rt_btn NY_rt_active" node-type="ok"><b class="NY_iw"><b class="NY_ii"><u class="NY_it">'+ok+'</u></b></b></a></div></div></div>';
-		return h;
 	},
 	 baseInfo=function(){
 		var getWinInfo=function(){
@@ -171,35 +161,14 @@
 			//set pop DOM object with this object
 			__.index=popColl.length;
 			__.popobj=pobj;
-			__.arrowDandS();
 			//let the object push in popColl
 			popColl.push(__);
-			//is or no can drag
-			if(!__.noTitle&&__.drag){
-				__.dragfn();
-			}
 			//bind close icon eventy
-			pobj.find('.nyt-close').bind('click',function(){__.close();});
+			pobj.find('a[nt-type="bm_close"]').bind('click',function(){__.close();});
 			__.afterSet();
 		},
-		arrowDandS:function(){
-			var __=this;
-			if(!__.arrow)return;
-			var arrow=__.popobj.find('.NY-arrow');
-			arrow.addClass('NY-arrow_'+__.direction);
-			switch(__.direction){
-				case 'top':
-				case 'bottom':
-				arrow.css({left:__.skewing});	
-				break;
-				case 'left':
-				case 'right':
-				arrow.css({top:__.skewing});
-				break;
-			}
-		},
 		afterSet:function(){
-			var __=this,cont=__.popobj.find('.NY-con-warp');
+			var __=this,cont=__.popobj.find('div[note-type="pop-cont-warp"]');
 			if(__.requestType && $.inArray(__.requestType, ['iframe', 'ajax', 'img']) != -1) {
 				cont.html('<div class="NY-con_loading"></div>');
 				//img
@@ -308,41 +277,6 @@
 				}catch(e){}
 			}
 			return {l:l,t:t};
-		},
-		//move popbox position
-		dragfn:function(){
-			var __=this;
-			var gropBar=__.popobj.find('.NY-pop-title'),oldPos,oldmouse,nx,ny;
-			gropBar.css({'cursor': 'move'});
-			gropBar.bind('mousedown.'+__.random,function(e){
-				e.preventDefault();
-   				e.stopPropagation();
-				__.gropStatus=true;
-				oldmouse = {
-                    x : e.clientX,
-                    y : e.clientY
-                };
-                oldPos={left:__.popobj.css('left'),top:__.popobj.css('top')};
-                $dcmen.bind('mousemove.'+__.random,function(e){
-                	//清除选择
-                   window.getSelection ? window.getSelection().removeAllRanges() : document.selection.empty();
-                    if(!__.gropStatus)return;
-                    var currs={
-                    	 x : e.clientX,
-                   		 y : e.clientY
-                    };
-                    if(currs.x>=winAttr['winWidth'])currs.x=winAttr['winWidth'];
-                    if(currs.y<0)currs.y=0;
-                    nx=currs.x-oldmouse.x+parseInt(oldPos.left);
-                    ny=currs.y-oldmouse.y+parseInt(oldPos.top);
-                    __.popobj.css({left:nx,top:ny});
-                }).bind('mouseup.'+__.random,function(e){
-                	__.gropStatus=false;
-                	$dcmen.unbind('mousemove.'+__.random);
-                	$dcmen.unbind('mouseup.'+__.random);
-                });
-				
-			});
 		}
 	};
 	//----------------------
@@ -375,11 +309,7 @@
 		};
 		$.extend(defaults,parm);
 		var parms=init(defaults);
-		if(parms.enhance){
-			parms.html=getealertTpl(parms.text,parms.confirm,parms.icontype);
-		}else{
 			parms.html=getalertTpl(parms.text,parms.confirm);
-		}
 		var pbox=new popFn(parms);
 		var ok= pbox.popobj.find('a[node-type=ok]');
 		ok.bind('click',function(){
